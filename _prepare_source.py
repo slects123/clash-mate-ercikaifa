@@ -27,6 +27,8 @@ def main():
 
     copies = [
         ("common/Pinxixi.kt", "common/src/main/java/com/github/kr328/clash/common/pinxixi/Pinxixi.kt"),
+        ("common/PinxixiTraffic.kt", "common/src/main/java/com/github/kr328/clash/common/pinxixi/PinxixiTraffic.kt"),
+        ("service/PinxixiTrafficReport.kt", "service/src/main/java/com/github/kr328/clash/service/PinxixiTrafficReport.kt"),
         ("service/ProfileManager.kt", "service/src/main/java/com/github/kr328/clash/service/ProfileManager.kt"),
         ("service/ProfileProcessor.kt", "service/src/main/java/com/github/kr328/clash/service/ProfileProcessor.kt"),
         ("service/ProfileReceiver.kt", "service/src/main/java/com/github/kr328/clash/service/ProfileReceiver.kt"),

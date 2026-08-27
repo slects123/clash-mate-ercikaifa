@@ -58,6 +58,10 @@ object PinxixiSyncLoop {
             else -> "interval"
         }
 
+        if (vpnOn) {
+            PinxixiTrafficReport.reportWhenVpnActive(context)
+        }
+
         if (vpnOn || webhookForce || expireForce) {
             forceSyncAll(context, reason, clearCache = expireForce || webhookForce)
         }
