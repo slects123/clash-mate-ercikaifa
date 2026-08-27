@@ -1,0 +1,7 @@
+ClashMetaForAndroid/
+*.apk
+**/build/
+**/.gradle/
+local.properties
+signing.properties
+release.keystore

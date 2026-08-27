@@ -1,0 +1,93 @@
+name: Build Clash Mate 二次开发
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    paths:
+      - 'patches/**'
+      - '_prepare_source.py'
+      - '.github/workflows/build-apk.yml'
+
+permissions:
+  contents: write
+
+env:
+  UPSTREAM_REF: main
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: android-actions/setup-android@v3
+
+      - uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r29
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.x'
+
+      - name: Clone upstream CMFA
+        run: |
+          git clone --depth 1 --branch "${UPSTREAM_REF}" \
+            https://github.com/MetaCubeX/ClashMetaForAndroid.git ClashMetaForAndroid
+
+      - name: Apply pinxixi patches
+        run: python _prepare_source.py
+
+      - name: Init submodules
+        working-directory: ClashMetaForAndroid
+        run: git submodule update --init --recursive --depth 1
+
+      - name: Write local.properties
+        working-directory: ClashMetaForAndroid
+        run: |
+          cat >> local.properties <<EOF
+          sdk.dir=${{ env.ANDROID_HOME }}
+          custom.application.id=com.wzpxx.clashmate.dev
+          remove.suffix=true
+          EOF
+
+      - name: Build Meta release APK
+        working-directory: ClashMetaForAndroid
+        run: ./gradlew app:assembleMetaRelease --no-daemon -x lint
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: clash-mate-dev-apk
+          path: |
+            ClashMetaForAndroid/app/build/outputs/apk/meta/release/*.apk
+          if-no-files-found: error
+
+  release:
+    needs: build-apk
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v2.11.33-dev.1
+          name: Clash Mate 二次开发
+          body: |
+            拼夕夕定制 · 独立包名 com.wzpxx.clashmate.dev，可与正版 CMFA 共存
+            拼夕夕订阅默认 5 分钟自动更新
+          files: artifacts/**/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
