@@ -4,7 +4,7 @@ import android.content.Context
 import com.github.kr328.clash.common.log.Log
 import com.github.kr328.clash.common.pinxixi.Pinxixi
 import com.github.kr328.clash.common.pinxixi.PinxixiTraffic
-import com.github.kr328.clash.core.bridge.Bridge
+import com.github.kr328.clash.core.Clash
 import com.github.kr328.clash.service.data.ImportedDao
 import com.github.kr328.clash.service.model.Profile
 
@@ -18,7 +18,7 @@ object PinxixiTrafficReport {
         }
 
         val total = try {
-            Bridge.nativeQueryTrafficTotal()
+            Clash.queryTrafficTotal()
         } catch (e: Exception) {
             Log.w("PinxixiTrafficReport: queryTrafficTotal failed: ${e.message}")
             return

@@ -2,7 +2,7 @@ package com.github.kr328.clash.common.pinxixi
 
 import org.json.JSONObject
 import java.net.HttpURLConnection
-import java.net.URI
+import java.net.URL
 
 object PinxixiTraffic {
     private val TOKEN_PATTERNS = listOf(
@@ -24,11 +24,11 @@ object PinxixiTraffic {
 
     fun trafficReportUrl(subscriptionUrl: String): String? {
         return try {
-            val uri = URI(subscriptionUrl)
+            val uri = URL(subscriptionUrl)
             val host = uri.host?.trim().orEmpty()
             if (host.isEmpty()) return null
             val port = if (uri.port > 0) ":${uri.port}" else ""
-            "${uri.scheme}://$host$port/api/v1/client/traffic/report"
+            "${uri.protocol}://$host$port/api/v1/client/traffic/report"
         } catch (_: Exception) {
             null
         }
@@ -36,7 +36,7 @@ object PinxixiTraffic {
 
     fun postTrafficReport(reportUrl: String, token: String, up: Long, down: Long): Boolean {
         return try {
-            val conn = (URI(reportUrl).toURL().openConnection() as HttpURLConnection).apply {
+            val conn = (URL(reportUrl).openConnection() as HttpURLConnection).apply {
                 connectTimeout = 8000
                 readTimeout = 8000
                 requestMethod = "POST"
