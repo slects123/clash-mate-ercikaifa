@@ -7,6 +7,7 @@ import com.github.kr328.clash.AppCrashedActivity
 import com.github.kr328.clash.common.Global
 import com.github.kr328.clash.common.log.Log
 import com.github.kr328.clash.common.util.intent
+import com.github.kr328.clash.service.PinxixiSyncLoop
 import com.github.kr328.clash.service.ProfileReceiver
 import com.github.kr328.clash.store.AppStore
 import com.github.kr328.clash.util.ApplicationObserver

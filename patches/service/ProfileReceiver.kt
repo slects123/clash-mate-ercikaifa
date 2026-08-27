@@ -18,6 +18,7 @@ import com.github.kr328.clash.service.data.Imported
 import com.github.kr328.clash.service.data.ImportedDao
 import com.github.kr328.clash.service.model.Profile
 import com.github.kr328.clash.service.util.importedDir
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -65,7 +66,7 @@ class ProfileReceiver : BroadcastReceiver() {
         }
 
         /** 拼夕夕订阅：立即拉取面板/上游，不等待定时器 */
-        fun syncPinxixiProfilesNow(context: Context, reason: String = "manual") {
+        suspend fun syncPinxixiProfilesNow(context: Context, reason: String = "manual") {
             ImportedDao().queryAllUUIDs()
                 .mapNotNull { ImportedDao().queryByUUID(it) }
                 .filter { it.type != Profile.Type.File && Pinxixi.isSubscriptionUrl(it.source) }

@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 /**
  * 拼夕夕同步守护：
- * 1) 每 10 秒（VPN 开着也跑）强制拉面板订阅并重载内核
+ * 1) 每 10 秒（VPN 开着也跑）强制拉订阅并重载内核
  * 2) 到期 / 即将到期：先清本地缓存再拉
  * 3) 轮询 165 Webhook epoch，面板渔云节点变更立即同步
  */
@@ -46,10 +46,10 @@ object PinxixiSyncLoop {
         }
     }
 
-    private fun tick(context: Context) {
+    private suspend fun tick(context: Context) {
         val vpnOn = StatusProvider.serviceRunning
         val webhookForce = pollWebhookForce()
-        val expireForce = anyPinxixiExpired(context)
+        val expireForce = anyPinxixiExpired()
 
         val reason = when {
             expireForce -> "expire_force"
@@ -58,13 +58,12 @@ object PinxixiSyncLoop {
             else -> "interval"
         }
 
-        // VPN 使用中 / 到期 / Webhook 变更：一律强制同步（清缓存 + 拉新节点 + 内核重载）
         if (vpnOn || webhookForce || expireForce) {
             forceSyncAll(context, reason, clearCache = expireForce || webhookForce)
         }
     }
 
-    private fun anyPinxixiExpired(context: Context): Boolean {
+    private suspend fun anyPinxixiExpired(): Boolean {
         return ImportedDao().queryAllUUIDs()
             .mapNotNull { ImportedDao().queryByUUID(it) }
             .any {
@@ -113,7 +112,7 @@ object PinxixiSyncLoop {
         return false
     }
 
-    fun forceSyncAll(context: Context, reason: String, clearCache: Boolean) {
+    suspend fun forceSyncAll(context: Context, reason: String, clearCache: Boolean) {
         ImportedDao().queryAllUUIDs()
             .mapNotNull { ImportedDao().queryByUUID(it) }
             .filter { it.type != Profile.Type.File && Pinxixi.isSubscriptionUrl(it.source) }
@@ -126,7 +125,6 @@ object PinxixiSyncLoop {
             }
     }
 
-    /** 清本地 provider 缓存，避免沿用过期节点（保留 config 至拉取成功后替换） */
     fun clearProfileCache(context: Context, uuid: String) {
         try {
             val dir = context.importedDir.resolve(uuid)
