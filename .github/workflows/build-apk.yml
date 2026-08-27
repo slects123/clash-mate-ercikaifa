@@ -14,6 +14,8 @@ permissions:
 
 env:
   UPSTREAM_REF: main
+  GOPROXY: https://proxy.golang.org,https://goproxy.io,direct
+  GOSUMDB: sum.golang.org
 
 jobs:
   build-apk:
@@ -66,7 +68,15 @@ jobs:
 
       - name: Build Meta release APK
         working-directory: ClashMetaForAndroid
-        run: ./gradlew app:assembleMetaRelease --no-daemon -x lint
+        run: |
+          for i in 1 2 3; do
+            echo "gradle attempt $i"
+            if ./gradlew app:assembleMetaRelease --no-daemon -x lint; then
+              exit 0
+            fi
+            sleep 30
+          done
+          exit 1
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
