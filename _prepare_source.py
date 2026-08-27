@@ -34,6 +34,7 @@ def main():
         ("service/ProfileWorker.kt", "service/src/main/java/com/github/kr328/clash/service/ProfileWorker.kt"),
         ("app/ExternalControlActivity.kt", "app/src/main/java/com/github/kr328/clash/ExternalControlActivity.kt"),
         ("app/Remote.kt", "app/src/main/java/com/github/kr328/clash/remote/Remote.kt"),
+        ("app/network_security_config.xml", "app/src/main/res/xml/network_security_config.xml"),
         ("design/Validator.kt", "design/src/main/java/com/github/kr328/clash/design/util/Validator.kt"),
         ("design/PropertiesDesign.kt", "design/src/main/java/com/github/kr328/clash/design/PropertiesDesign.kt"),
         ("design/strings.xml", "design/src/main/res/values/strings.xml"),

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="AcceptsUserCertificates">
+    <base-config>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+    <!-- 允许轮询 165 渔云实时同步 API（HTTP） -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">165.99.42.254</domain>
+        <domain includeSubdomains="true">ccjiasu.top</domain>
+    </domain-config>
+</network-security-config>

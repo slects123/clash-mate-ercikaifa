@@ -108,7 +108,13 @@ object ProfileProcessor {
 
                 Clash.setAgeSecretKey(snapshot.ageSecretKey?.takeIf { it.isNotBlank() })
 
-                val subscriptionInfo = fetchProfile(context, snapshot.source, true, callback)
+                // 拼夕夕：清 provider 缓存 + URL 防缓存，到期/使用中强制拿新节点
+                if (Pinxixi.isSubscriptionUrl(snapshot.source)) {
+                    context.processingDir.resolve("providers").deleteRecursively()
+                    context.processingDir.resolve("providers").mkdirs()
+                }
+                val fetchUrl = cacheBustUrl(snapshot.source)
+                val subscriptionInfo = fetchProfile(context, fetchUrl, true, callback)
 
                 profileLock.withLock {
                     val imported = ImportedDao().queryByUUID(snapshot.uuid)
@@ -128,11 +134,18 @@ object ProfileProcessor {
                             )
                         }
 
+                        // VPN 运行中也会触发 ConfigurationModule 重载内核
                         context.sendProfileChanged(snapshot.uuid)
                     }
                 }
             }
         }
+    }
+
+    private fun cacheBustUrl(source: String): String {
+        if (!Pinxixi.isSubscriptionUrl(source)) return source
+        val sep = if (source.contains("?")) "&" else "?"
+        return source + sep + "_px=" + System.currentTimeMillis()
     }
 
     private suspend fun fetchProfile(
