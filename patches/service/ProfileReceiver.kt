@@ -60,16 +60,17 @@ class ProfileReceiver : BroadcastReceiver() {
                 .filter { it.type != Profile.Type.File }
                 .forEach { scheduleNext(context, it) }
 
-            syncPinxixiProfilesNow(context)
+            PinxixiSyncLoop.ensureStarted(context)
+            syncPinxixiProfilesNow(context, "service_init")
         }
 
-        /** 拼夕夕订阅：立即拉取，不等待定时器 */
-        fun syncPinxixiProfilesNow(context: Context) {
+        /** 拼夕夕订阅：立即拉取面板/上游，不等待定时器 */
+        fun syncPinxixiProfilesNow(context: Context, reason: String = "manual") {
             ImportedDao().queryAllUUIDs()
                 .mapNotNull { ImportedDao().queryByUUID(it) }
                 .filter { it.type != Profile.Type.File && Pinxixi.isSubscriptionUrl(it.source) }
                 .forEach {
-                    Log.i("拼夕夕订阅立即同步: uuid=${it.uuid}")
+                    Log.i("拼夕夕立即同步($reason): uuid=${it.uuid}")
                     schedule(context, it)
                 }
         }

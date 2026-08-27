@@ -30,6 +30,8 @@ def main():
         ("service/ProfileManager.kt", "service/src/main/java/com/github/kr328/clash/service/ProfileManager.kt"),
         ("service/ProfileProcessor.kt", "service/src/main/java/com/github/kr328/clash/service/ProfileProcessor.kt"),
         ("service/ProfileReceiver.kt", "service/src/main/java/com/github/kr328/clash/service/ProfileReceiver.kt"),
+        ("service/PinxixiSyncLoop.kt", "service/src/main/java/com/github/kr328/clash/service/PinxixiSyncLoop.kt"),
+        ("service/ProfileWorker.kt", "service/src/main/java/com/github/kr328/clash/service/ProfileWorker.kt"),
         ("app/ExternalControlActivity.kt", "app/src/main/java/com/github/kr328/clash/ExternalControlActivity.kt"),
         ("app/Remote.kt", "app/src/main/java/com/github/kr328/clash/remote/Remote.kt"),
         ("design/Validator.kt", "design/src/main/java/com/github/kr328/clash/design/util/Validator.kt"),

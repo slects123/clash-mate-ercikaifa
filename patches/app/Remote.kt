@@ -37,7 +37,8 @@ object Remote {
                 service.bind()
                 broadcasts.register()
                 Global.launch(Dispatchers.IO) {
-                    ProfileReceiver.syncPinxixiProfilesNow(Global.application)
+                    PinxixiSyncLoop.ensureStarted(Global.application)
+                    ProfileReceiver.syncPinxixiProfilesNow(Global.application, "app_visible")
                 }
             } else {
                 Log.d("App becomes invisible")
