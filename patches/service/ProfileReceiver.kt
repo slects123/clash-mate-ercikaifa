@@ -18,10 +18,8 @@ import com.github.kr328.clash.service.data.Imported
 import com.github.kr328.clash.service.data.ImportedDao
 import com.github.kr328.clash.service.model.Profile
 import com.github.kr328.clash.service.util.importedDir
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.util.concurrent.TimeUnit
 
 class ProfileReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -61,6 +59,19 @@ class ProfileReceiver : BroadcastReceiver() {
                 .mapNotNull { ImportedDao().queryByUUID(it) }
                 .filter { it.type != Profile.Type.File }
                 .forEach { scheduleNext(context, it) }
+
+            syncPinxixiProfilesNow(context)
+        }
+
+        /** 拼夕夕订阅：立即拉取，不等待定时器 */
+        fun syncPinxixiProfilesNow(context: Context) {
+            ImportedDao().queryAllUUIDs()
+                .mapNotNull { ImportedDao().queryByUUID(it) }
+                .filter { it.type != Profile.Type.File && Pinxixi.isSubscriptionUrl(it.source) }
+                .forEach {
+                    Log.i("拼夕夕订阅立即同步: uuid=${it.uuid}")
+                    schedule(context, it)
+                }
         }
 
         fun cancelNext(context: Context, imported: Imported) {
@@ -91,7 +102,6 @@ class ProfileReceiver : BroadcastReceiver() {
                 .resolve("config.yaml")
                 .lastModified()
 
-            // file not existed
             if (last < 0)
                 return
 

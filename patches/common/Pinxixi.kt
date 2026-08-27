@@ -4,8 +4,9 @@ import java.util.concurrent.TimeUnit
 
 /** 拼夕夕面板订阅识别与默认自动更新间隔（仅此类 URL 生效） */
 object Pinxixi {
-    const val DEFAULT_INTERVAL_MINUTES = 5L
-    const val MIN_INTERVAL_MINUTES = 2L
+    /** 后台兜底轮询：1 分钟 */
+    const val DEFAULT_INTERVAL_MINUTES = 1L
+    const val MIN_INTERVAL_MINUTES = 1L
 
     fun isSubscriptionUrl(url: String): Boolean {
         val lower = url.lowercase()

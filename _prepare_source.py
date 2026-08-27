@@ -31,6 +31,9 @@ def main():
         ("service/ProfileProcessor.kt", "service/src/main/java/com/github/kr328/clash/service/ProfileProcessor.kt"),
         ("service/ProfileReceiver.kt", "service/src/main/java/com/github/kr328/clash/service/ProfileReceiver.kt"),
         ("app/ExternalControlActivity.kt", "app/src/main/java/com/github/kr328/clash/ExternalControlActivity.kt"),
+        ("app/Remote.kt", "app/src/main/java/com/github/kr328/clash/remote/Remote.kt"),
+        ("design/Validator.kt", "design/src/main/java/com/github/kr328/clash/design/util/Validator.kt"),
+        ("design/PropertiesDesign.kt", "design/src/main/java/com/github/kr328/clash/design/PropertiesDesign.kt"),
         ("design/strings.xml", "design/src/main/res/values/strings.xml"),
         ("build.gradle.kts", "build.gradle.kts"),
     ]
