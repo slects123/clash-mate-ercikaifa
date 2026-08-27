@@ -12,7 +12,7 @@ import com.github.kr328.clash.service.model.Profile
  * VPN 使用中：读取 Mihomo 会话累计流量并上报面板个人计费。
  */
 object PinxixiTrafficReport {
-    fun reportWhenVpnActive(context: Context) {
+    suspend fun reportWhenVpnActive(context: Context) {
         if (!StatusProvider.serviceRunning) {
             return
         }
